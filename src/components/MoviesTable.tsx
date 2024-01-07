@@ -1,4 +1,4 @@
-import { getMovies, type Movie } from "@/firebase/movies";
+import { getMovies } from "@/firebase/movies";
 import {
   Table,
   TableBody,
@@ -7,34 +7,45 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Card } from "./ui/card";
 
 export const MoviesTable = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  getMovies().then((movies) => {
-    setMovies(movies);
+  const {
+    isPending,
+    error,
+    data: movies,
+  } = useQuery({
+    queryKey: ["movies"],
+    queryFn: getMovies,
   });
-  console.log(movies);
+
+  if (isPending) return "Loading...";
+
+  if (error) return "An error has occurred: " + error.message;
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {movies.map((movie) => (
-          <TableRow key={movie.title}>
-            <TableCell className="font-medium">{movie.title}</TableCell>
-            <TableCell>{movie.link}</TableCell>
-            <TableCell>{movie.upvotes}</TableCell>
-            <TableCell className="text-right">{movie.downvotes}</TableCell>
+    <Card className="w-fit">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Title</TableHead>
+            <TableHead>Link</TableHead>
+            <TableHead>Upvotes</TableHead>
+            <TableHead>Downvotes</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {movies.map((movie) => (
+            <TableRow key={movie.title}>
+              <TableCell className="font-medium">{movie.title}</TableCell>
+              <TableCell>{movie.link || "no link provided"}</TableCell>
+              <TableCell>{movie.upvotes ?? 0}</TableCell>
+              <TableCell>{movie.downvotes ?? 0}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Card>
   );
 };

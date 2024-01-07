@@ -9,7 +9,7 @@ import {
 import { db } from "./firebase";
 import { z } from "zod";
 
-const Movie = z.object({
+export const Movie = z.object({
   title: z.string(),
   link: z.string().optional(),
   upvotes: z.number().optional(),
@@ -32,7 +32,12 @@ export async function getMovies() {
 }
 
 export async function addMovie(movie: Movie) {
-  await setDoc(doc(db, "movies", movie.title), movie);
+  console.log("movie", movie);
+  try {
+    await setDoc(doc(db, "movies", movie.title), movie);
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 export async function upvoteMovie(movie: Movie) {
