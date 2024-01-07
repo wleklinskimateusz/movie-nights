@@ -17,7 +17,7 @@ const Movie = z.object({
   watched: z.boolean().optional(),
 });
 
-type Movie = z.infer<typeof Movie>;
+export type Movie = z.infer<typeof Movie>;
 
 export async function getMovies() {
   const querySnapshot = await getDocs(collection(db, "movies"));

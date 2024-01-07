@@ -1,11 +1,11 @@
 import "./App.css";
-import { Button } from "./components/ui/button";
+import { MoviesTable } from "./components/MoviesTable";
 
 function App() {
   return (
-    <div>
-      <Button>Click me</Button>
-    </div>
+    <main>
+      <MoviesTable />
+    </main>
   );
 }
 
